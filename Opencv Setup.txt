@@ -1,0 +1,15 @@
+sudo apt-get update
+
+sudo apt-get upgrade
+
+sudo apt install python3-pip
+
+sudo apt install python3-opencv
+
+sudo pip3 install opencv-contrib-python
+
+
+
+# Apenas no Windows
+# Ativa janelas (instalar Xming server no Windows)
+# sudo echo "export DISPLAY=:0.0" >> ~/.bashrc
