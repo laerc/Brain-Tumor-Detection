@@ -1,5 +1,6 @@
 # slides : https://www.overleaf.com/project/5bb8c845f83b4a4c4a710e13
-#
+# dataset : https://figshare.com/articles/brain_tumor_dataset/1512427
+ 
 import numpy as np
 import cv2 as cv
 import sys
@@ -28,25 +29,28 @@ class Detector:
 
         return outImage
 
-    def doDilation(self, img, window_size):
+    def doDilation(self, img, window_size, kernel):
         rows,cols = img.shape
         k = (window_size)/2
         outImage = img
 
         for i in range(k,rows-k):
             for j in range(k,cols-k):
-                
                 max_val = outImage[i][j]
-                ok = True
+                ok = True  
                 for x in range(i-k,i+k+1):
                     for y in range(j-k,j+k+1):
+                        if(kernel[x-(i-k)][y-(j-k)] == 0):
+                            continue
+                        if(max_val != img[x][y]):
+                            ok = False
                         max_val = max(max_val, img[x][y])
-                
-                outImage[i][j] = max_val
+                if(ok == True):
+                    outImage[i][j] = max_val
                 
         return outImage        
 
-    def doErosion(self, img, window_size):
+    def doErosion(self, img, window_size, kernel):
         rows,cols = img.shape
         k = (window_size)/2
         outImage = img
@@ -54,15 +58,21 @@ class Detector:
         for i in range(k,rows-k):
             for j in range(k,cols-k):
                 min_val = outImage[i][j]
+                ok = True
                 for x in range(i-k,i+k+1):
                     for y in range(j-k,j+k+1):
+                        if(kernel[x-(i-k)][y-(j-k)] == 0):
+                            continue
+                        if(min_val != img[x][y]):
+                            ok = False
                         min_val = min(min_val, img[x][y])
-                outImage[i][j] = min_val
+                if(ok == True):
+                    outImage[i][j] = min_val
 
-        return outImage        
+        return outImage
 
-    def doOpen(self, img, window_size):
-        return self.doDilation(self.doErosion(img, window_size), window_size);
+    def doOpen(self, img, window_size, kernel):
+        return self.doDilation(self.doErosion(img, window_size, kernel), window_size, kernel);
 
     def detect(self, imagePath, k):
 
@@ -163,11 +173,8 @@ class Detector:
         # For each output image        
         for i in range(k):            
             
-            # Opening filter   
-            #opening = cv.morphologyEx(outputImages[i], cv.MORPH_OPEN, strel)
-            #(thresh, im_bw) = cv.threshold(outputImages[i], 128, 255, cv.THRESH_BINARY | cv.THRESH_OTSU)
-            #opening = self.doDilation(outputImages[i], 3)
-            #opening = self.doOpen(outputImages[i], 3)
+            # Opening filter
+            opening = self.doOpen(outputImages[i], 3, strel)
 
             out = np.hstack((outputImages[i],opening))
             cv.imshow("K-Means / Morphological ("+str(i)+")",out)
