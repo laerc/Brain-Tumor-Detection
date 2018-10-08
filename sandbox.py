@@ -3,7 +3,7 @@ import cv2 as cv
 import sys
 
 
-# Notas - André Costa
+# Notas - Andre Costa
 # Este é apenas um arquivo exemplo de como usar funções básicas do OpenCV
 # Não manjo quase nada de Python, então muito provavelmente farei coisas de uma forma burra
 # Desculpem o vacilo e obrigado pela compreensão. Estou 100% aberto a sugestões e a aprender...
