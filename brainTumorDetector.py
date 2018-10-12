@@ -4,6 +4,7 @@
 import numpy as np
 import cv2 as cv
 import sys
+import math
 
 # Usage: python3 brainTumorDetector.py filename K_value
 # TODO - Implement argparse...
@@ -109,6 +110,7 @@ class Detector:
         for i in range(k):
             centers[i] = int((i*255)/(k))
 
+
         # Variable to store segmented outputs
         outputImages = np.zeros((k,rows,cols),'float')                     
 
@@ -129,7 +131,7 @@ class Detector:
 
                     minDist     = 1000 
                     minCenter   = None             
-                    pixelValue = MRIImg[row][col] 
+                    pixelValue  = MRIImg[row][col] 
                     
                     # Finds minimum distance from centers values
                     for i in range(k):
@@ -153,7 +155,7 @@ class Detector:
             # Update center values
             for i in range(k):
                 newCenter =  float(centerSumPixel[i])/float(centerCount[i])
-                centersDiffSum = abs(centers[i] - newCenter)
+                centersDiffSum += abs(centers[i] - newCenter) # TODO - REVER.... pode ser melhorado para convergir mais rapidamente
                 centers[i] = newCenter
                
             print("Centers",centers)
@@ -166,8 +168,12 @@ class Detector:
         # 3) Morphological Filtering
 
         # Creates structuring element used on the morphological filtering
-        strel = cv.getStructuringElement(cv.MORPH_ELLIPSE,(3,3))
-        #print (strel)
+        #ksize = int(math.ceil(1.5*rows/100))
+        ksize = 3
+        print("ksize",ksize)
+
+        strel = cv.getStructuringElement(cv.MORPH_ELLIPSE,(ksize,ksize))
+
         cv.imshow("Input / Median Filter",np.hstack((MRIImg,MRIImgMedian)))
 
         # For each output image        
@@ -179,14 +185,22 @@ class Detector:
             out = np.hstack((outputImages[i],opening))
             cv.imshow("K-Means / Morphological ("+str(i)+")",out)
 
-            outputImages[i] = opening            
+            outputImages[i] = opening  
+
+            if(save):
+                cv.imwrite(str(i)+"_"+imagePath, opening)
             
         cv.waitKey(0)
         cv.destroyAllWindows() 
 
 if __name__ == "__main__":
     imagePath   = sys.argv[1]
-    k           = sys.argv[2]    
+    k           = sys.argv[2] 
+
+    if(len(sys.argv)>3 and sys.argv[3] == "--save"):   
+        save        = True   
+    else:
+        save        = False
 
     x = Detector()
     x.detect(imagePath,int(k))
