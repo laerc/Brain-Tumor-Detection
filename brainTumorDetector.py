@@ -16,7 +16,7 @@ class Detector:
     def medianFilter(self, MRIImg, window_size):
         rows,cols = MRIImg.shape
         k = int(window_size/2)
-        outImage = MRIImg
+        outImage = MRIImg.copy()
 
         for i in range(k,rows-k):
             for j in range(k,cols-k):
@@ -33,7 +33,7 @@ class Detector:
     def doDilation(self, img, window_size, kernel):
         rows,cols = img.shape
         k = int((window_size)/2)
-        outImage = img
+        outImage = img.copy()
 
         for i in range(k,rows-k):
             for j in range(k,cols-k):
@@ -43,8 +43,8 @@ class Detector:
                     for y in range(j-k,j+k+1):
                         if(kernel[x-(i-k)][y-(j-k)] == 0):
                             continue
-                        if(max_val != img[x][y]):
-                            ok = False
+                        #if(max_val != img[x][y]):
+                        #    ok = False
                         max_val = max(max_val, img[x][y])
                 if(ok == True):
                     outImage[i][j] = max_val
@@ -54,7 +54,7 @@ class Detector:
     def doErosion(self, img, window_size, kernel):
         rows,cols = img.shape
         k = int((window_size)/2)
-        outImage = img
+        outImage = img.copy()
 
         for i in range(k,rows-k):
             for j in range(k,cols-k):
@@ -64,8 +64,8 @@ class Detector:
                     for y in range(j-k,j+k+1):
                         if(kernel[x-(i-k)][y-(j-k)] == 0):
                             continue
-                        if(min_val != img[x][y]):
-                            ok = False
+                        #if(min_val != img[x][y]):
+                        #    ok = False
                         min_val = min(min_val, img[x][y])
                 if(ok == True):
                     outImage[i][j] = min_val
