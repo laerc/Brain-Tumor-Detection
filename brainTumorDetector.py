@@ -15,7 +15,7 @@ class Detector:
 
     def medianFilter(self, MRIImg, window_size):
         rows,cols = MRIImg.shape
-        k = window_size/2
+        k = int(window_size/2)
         outImage = MRIImg
 
         for i in range(k,rows-k):
@@ -32,7 +32,7 @@ class Detector:
 
     def doDilation(self, img, window_size, kernel):
         rows,cols = img.shape
-        k = (window_size)/2
+        k = int((window_size)/2)
         outImage = img
 
         for i in range(k,rows-k):
@@ -53,7 +53,7 @@ class Detector:
 
     def doErosion(self, img, window_size, kernel):
         rows,cols = img.shape
-        k = (window_size)/2
+        k = int((window_size)/2)
         outImage = img
 
         for i in range(k,rows-k):
