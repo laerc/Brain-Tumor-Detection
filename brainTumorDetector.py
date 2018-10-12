@@ -26,7 +26,7 @@ class Detector:
                         tmp_list.append(MRIImg[x][y])
 
                 tmp_list.sort()
-                outImage[i][j] = tmp_list[len(tmp_list)/2]
+                outImage[i][j] = tmp_list[int(len(tmp_list)/2)]
 
         return outImage
 
