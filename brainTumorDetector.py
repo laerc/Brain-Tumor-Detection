@@ -6,11 +6,11 @@ import cv2 as cv
 import sys
 import math
 
-# Usage: python3 brainTumorDetector.py filename K_value
+# Usage: python3 brainTumorDetector.py filename K_value Strel_Size [--save]
 # TODO - Implement argparse...
 
 STOP_THRESHOLD = 0
-USE_OPENCV_FILTERS = False
+USE_OPENCV_FILTERS = True
 STEP_BY_STEP = False
 SHOW_MORPHO = True
 
@@ -208,6 +208,4 @@ if __name__ == "__main__":
         save        = False
 
     x = Detector()
-    x.detect(imagePath,int(k),int(ksize))
-
-  
+    x.detect(imagePath,int(k),int(ksize))  
